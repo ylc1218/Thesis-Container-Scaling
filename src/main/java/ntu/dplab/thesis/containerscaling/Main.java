@@ -3,7 +3,7 @@ package ntu.dplab.thesis.containerscaling;
 import ntu.dplab.thesis.containerscaling.scheduler.Scheduler;
 import ntu.dplab.thesis.containerscaling.container.ContainerCost;
 import ntu.dplab.thesis.containerscaling.container.ContainerList;
-import ntu.dplab.thesis.containerscaling.scheduler.MaxScheduler;
+import ntu.dplab.thesis.containerscaling.scheduler.GreedyScheduler;
 import ntu.dplab.thesis.containerscaling.trace.DeployTrace;
 import ntu.dplab.thesis.containerscaling.trace.RequestTrace;
 import ntu.dplab.thesis.containerscaling.trace.TraceStatistic;
@@ -25,10 +25,16 @@ public class Main{
         
         //schedule
         ContainerList zeroList = new ContainerList();
-        Scheduler maxScheduler = new MaxScheduler();
-        DeployTrace deployTrace = maxScheduler.schedule(req, zeroList);
-        TraceStatistic stat = ContainerCost.constructTraceStat(deployTrace, req);
-        stat.print();
-        stat.printTrace();
+        Scheduler[] schedulers = {
+        	new GreedyScheduler(GreedyScheduler.SCHED_TYPE.MAX),
+        	new GreedyScheduler(GreedyScheduler.SCHED_TYPE.FIT),
+        };
+        
+        for(Scheduler scheduler : schedulers){
+	        DeployTrace deployTrace = scheduler.schedule(req, zeroList);
+	        TraceStatistic stat = ContainerCost.constructTraceStat(deployTrace, req);
+	        stat.print();
+	        stat.printTrace();
+        }
     }
 }

@@ -50,4 +50,9 @@ public class ContainerUtil {
 	public static int containerUpBound(int base){
 		return (100 * base) / Constant.U;
 	}
+	
+	public static boolean fitConstraints(ContainerList deploy, int need){
+		int have = deploy.resourceUnitCnt();
+		return (have >= need) && (have <= containerUpBound(need));				
+	}
 }
