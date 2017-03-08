@@ -29,5 +29,6 @@ public class Main{
         DeployTrace deployTrace = maxScheduler.schedule(req, zeroList);
         TraceStatistic stat = ContainerCost.constructTraceStat(deployTrace, req);
         stat.print();
+        stat.printTrace();
     }
 }

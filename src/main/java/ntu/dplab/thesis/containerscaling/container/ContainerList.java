@@ -1,5 +1,7 @@
 package ntu.dplab.thesis.containerscaling.container;
 
+import java.util.Arrays;
+
 import ntu.dplab.thesis.containerscaling.constant.Constant;
 public class ContainerList implements Comparable<ContainerList>{
 	private int[] num;
@@ -26,6 +28,11 @@ public class ContainerList implements Comparable<ContainerList>{
 		return sum;
 	}
 
+	@Override
+	public String toString(){
+		return String.join(",", Arrays.toString(num));
+	}
+	
 	@Override
 	public int compareTo(ContainerList o) {
 		return this.resourceUnitCnt() - o.resourceUnitCnt();

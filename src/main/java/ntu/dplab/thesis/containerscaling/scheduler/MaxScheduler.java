@@ -1,8 +1,5 @@
 package ntu.dplab.thesis.containerscaling.scheduler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import ntu.dplab.thesis.containerscaling.container.ContainerCost;
@@ -19,7 +16,7 @@ public class MaxScheduler implements Scheduler{
 		ContainerList bestList = null;
 		for(ContainerList now : possible){
 			double cost = ContainerCost.stepCost(pre, now, curNeed);
-			if (cost < minCost){
+			if (cost <= minCost){
 				minCost = cost;
 				bestList = now;
 			}
@@ -29,15 +26,13 @@ public class MaxScheduler implements Scheduler{
 	
 	public DeployTrace schedule(RequestTrace req, ContainerList start) {
 		Integer[] needArr = req.getNeedArr();
-		int maxReqUnit = Collections.max(Arrays.asList(needArr));
 		ContainerList pre = start;
 		DeployTrace deployment = new DeployTrace(needArr.length);
 		
 		for(int curNeed : needArr){
-			int target = Math.min(maxReqUnit, ContainerUtil.containerUpBound(curNeed));
+			int target = ContainerUtil.containerUpBound(curNeed);
 			List<ContainerList> possible = ContainerUtil.getPossibleCombination(target);
-			pre = scheduleStep(pre, possible, curNeed);
-			
+			pre = scheduleStep(pre, possible, curNeed);			
 			deployment.add(pre);
 		}
 		

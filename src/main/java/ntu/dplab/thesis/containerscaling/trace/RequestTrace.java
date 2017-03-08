@@ -9,19 +9,25 @@ import ntu.dplab.thesis.containerscaling.constant.Constant;
 
 public class RequestTrace {
 	private ArrayList<Integer> needArr;
+	
 	public RequestTrace(String filename) {
 		needArr = new ArrayList<Integer>();
 		Scanner infile = null;
 		try {
-			infile = new Scanner(new File(filename)).useDelimiter("\\s*\\n");
+			infile = new Scanner(new File(filename));
+			infile.useDelimiter("\\s*\\n");
+			
 			while(infile.hasNextDouble()){
 				int unit = (int) Math.ceil(infile.nextDouble() / Constant.UNIT_SERVE);
 				needArr.add(unit);
 			}
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} finally{
-			infile.close();			
+			if (infile != null){
+				infile.close();
+			}
 		}
 	}
 	
