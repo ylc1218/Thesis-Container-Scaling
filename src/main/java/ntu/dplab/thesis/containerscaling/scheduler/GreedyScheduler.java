@@ -9,8 +9,7 @@ import ntu.dplab.thesis.containerscaling.trace.DeployTrace;
 import ntu.dplab.thesis.containerscaling.trace.RequestTrace;
 
 public class GreedyScheduler implements Scheduler{
-	private SCHED_TYPE type;
-	
+	private final SCHED_TYPE type;	
 	public static enum SCHED_TYPE{
 		MAX, FIT;
 	}

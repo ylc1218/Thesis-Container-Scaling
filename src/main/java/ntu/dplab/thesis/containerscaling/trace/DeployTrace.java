@@ -12,7 +12,13 @@ public class DeployTrace {
 	}
 	
 	public void add(ContainerList l){
-		deployment.add(l);
+		deployment.add(l);		
+	}
+	
+	public void addAll(ContainerList[] lists){
+		for(ContainerList l : lists){
+			deployment.add(l);
+		}
 	}
 	
 	public ContainerList[] getDeploymentArr(){

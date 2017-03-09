@@ -1,9 +1,9 @@
 package ntu.dplab.thesis.containerscaling;
 
-import ntu.dplab.thesis.containerscaling.scheduler.Scheduler;
 import ntu.dplab.thesis.containerscaling.container.ContainerCost;
 import ntu.dplab.thesis.containerscaling.container.ContainerList;
-import ntu.dplab.thesis.containerscaling.scheduler.GreedyScheduler;
+import ntu.dplab.thesis.containerscaling.scheduler.DpScheduler;
+import ntu.dplab.thesis.containerscaling.scheduler.Scheduler;
 import ntu.dplab.thesis.containerscaling.trace.DeployTrace;
 import ntu.dplab.thesis.containerscaling.trace.RequestTrace;
 import ntu.dplab.thesis.containerscaling.trace.TraceStatistic;
@@ -26,12 +26,16 @@ public class Main{
         //schedule
         ContainerList zeroList = new ContainerList();
         Scheduler[] schedulers = {
-        	new GreedyScheduler(GreedyScheduler.SCHED_TYPE.MAX),
-        	new GreedyScheduler(GreedyScheduler.SCHED_TYPE.FIT),
+        	//new GreedyScheduler(GreedyScheduler.SCHED_TYPE.MAX),
+        	//new GreedyScheduler(GreedyScheduler.SCHED_TYPE.FIT),
+        	new DpScheduler(DpScheduler.SCHED_TYPE.OPT),
         };
         
         for(Scheduler scheduler : schedulers){
 	        DeployTrace deployTrace = scheduler.schedule(req, zeroList);
+	        assert (deployTrace.size() == req.size()): 
+	        	String.format("Trace size (%d) should be equal to req size (%d)", deployTrace.size(), req.size());
+	        
 	        TraceStatistic stat = ContainerCost.constructTraceStat(deployTrace, req);
 	        stat.print();
 	        stat.printTrace();

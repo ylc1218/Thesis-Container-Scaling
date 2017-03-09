@@ -22,6 +22,29 @@ public class ContainerCost {
 		return adjustmentCost(pre, now) + insufficiencyCost(pre, curNeed);
 	}
 	
+	public static double totalCost(DeployTrace deploy, RequestTrace req){
+		// check the size of deployment and request
+		assert deploy.size() == req.size():
+			"Size of deploy trace ( " + deploy.size() + ") should be equal to "
+			+ "the size of request trace (" + req.size() + ")";
+		
+		ContainerList[] deployment = deploy.getDeploymentArr();
+		Integer[] reqNum = req.getNeedArr();
+		int T = deployment.length;
+		ContainerList pre = new ContainerList(); // zero list
+		double totalCost = 0;
+		
+		for(int t = 0; t < T; t++){
+			ContainerList now = deployment[t];
+			assert (now.resourceUnitCnt() >= reqNum[t]):
+				"At step " + t + ": deployed #unit (" + now.resourceUnitCnt() + ") should >= " + reqNum[t];
+			
+			totalCost += stepCost(pre, now, reqNum[t]);
+			pre = now;
+		}
+		return totalCost;
+	}
+	
 	public static TraceStatistic constructTraceStat(DeployTrace deploy, RequestTrace req){
 		// check the size of deployment and request
 		assert deploy.size() == req.size():
