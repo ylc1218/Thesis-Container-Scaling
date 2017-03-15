@@ -10,7 +10,7 @@ public class ContainerUtil {
 	public ContainerUtil() {}
 	
 	/**
-	 	Possible combinations
+	 	Possible combinations (for greedy)
 	*/	
 	
 	private static void dfs(ArrayList<ContainerList> retList, int[] l, int id, int target){
@@ -51,33 +51,50 @@ public class ContainerUtil {
 		return retList.subList(0, idx);
 	}
 	
-	private static void dfs(ArrayList<ContainerList> retList, ContainerList l, int id, int minReq, int maxReq){
-		// boundary
-		if (id == Constant.N - 1){
-			int maxChoose = Math.max(0, (maxReq - l.resourceUnitCnt()) / Constant.UNIT_MUL[id]);
-			int minChoose = (int) Math.max(0, Math.ceil((double)(minReq - l.resourceUnitCnt()) / Constant.UNIT_MUL[id]));
-			
-			for(int x = minChoose; x <= maxChoose; x++){
-				l.set(id, x);
-				retList.add(l.clone());
+	/**
+ 		Possible combinations (for dp)
+	*/
+	private class DpCombinationHelper{
+		private ContainerList boundList;
+		private int minReq;
+		private ArrayList<ContainerList> retList;
+		
+		private DpCombinationHelper(int minReq, int maxReq, ContainerList start){
+			this.minReq = minReq;			
+		
+			boundList = new ContainerList();
+			for(int n = 0; n < Constant.N; n++){
+				int m = (int) Math.ceil(maxReq / (double) Constant.UNIT_MUL[n]);				
+				boundList.set(n, Math.max(start.get(n), m));
 			}
-			l.set(id, 0);
-			return;
+			
+			retList = new ArrayList<ContainerList>();
 		}
 		
-		// maximum number of id-th container
-		int maxChoose = Math.max(0, (maxReq - l.resourceUnitCnt()) / Constant.UNIT_MUL[id]);
-		for (int x = 0; x <= maxChoose; x++){
-			l.set(id, x);
-			dfs(retList, l, id + 1, minReq, maxReq);			
-		}		
-		l.set(id, 0);
-	}
+		private void dfs(ContainerList l, int id, int have){
+			if (id == Constant.N){				
+				if (have >= minReq){
+					retList.add(l.clone());
+				}
+				return;
+			}
+								
+			for (int x = 0; x <= boundList.get(id); x++){
+				l.set(id, x);
+				dfs(l, id + 1, have + x * Constant.UNIT_MUL[id]);			
+			}			
+		}
+		
+		private List<ContainerList> getCombination(){
+			ContainerList l = new ContainerList();
+			dfs(l, 0, 0);
+			return retList;
+		}
+	}		
 	
-	public static List<ContainerList> getPossibleCombination(int minReq, int maxReq){
-		ArrayList<ContainerList> retList = new ArrayList<ContainerList>();
-		dfs(retList, new ContainerList(), 0, minReq, maxReq);						
-		return retList;
+	public List<ContainerList> getPossibleDpCombination(int minReq, int maxReq, ContainerList start){		
+		DpCombinationHelper helper = new DpCombinationHelper(minReq, maxReq, start);
+		return helper.getCombination();
 	}
 	
 	
