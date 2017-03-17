@@ -56,7 +56,7 @@ public class DpRunner {
 		from = new Cell[T][L];
 		
 		this.costUpBound = costUpBound;
-		this.start = start;		
+		this.start = start;			
 	}
 
 	private DeployTrace backTrack(){
@@ -72,7 +72,7 @@ public class DpRunner {
 				minCost = dp[arrId][id];
 				bestCell = now;
 			}
-			else if (dp[arrId][id] == minCost && (bestCell == null || id < bestCell.id)){
+			else if (dp[arrId][id] == minCost && (bestCell == null || id > bestCell.id)){
 				bestCell = now;
 			}
 		}
@@ -107,10 +107,10 @@ public class DpRunner {
 				bestCost = cost;
 				bestCell = preCell;
 			}
-			else if (cost == bestCost && (bestCell == null || preCell.id < bestCell.id)){
+			else if (cost == bestCost && (bestCell == null || bestCell.id < preCell.id)){
 				bestCell = preCell;
 			}
-		}						
+		}
 		
 		return bestCell;
 	}

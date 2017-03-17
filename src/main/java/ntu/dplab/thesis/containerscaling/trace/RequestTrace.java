@@ -31,6 +31,14 @@ public class RequestTrace {
 		}
 	}
 	
+	public RequestTrace() {
+		needArr = new ArrayList<Integer>();
+	}
+	
+	public void add(int x){
+		needArr.add(x);
+	}
+	
 	public int size() {
 		return needArr.size();
 	}
