@@ -11,10 +11,19 @@ public class DpScheduler extends Scheduler{
 		super(type);
 	}
 	
-	private DeployTrace optSchedule(RequestTrace req, ContainerList start){
+	
+	// use GREEDY_FIT as base cost
+	private DeployTrace optSchedule(RequestTrace req, RequestTrace predict, ContainerList start){
 		// upper bound		
-		Scheduler boundScheduler = new GreedyScheduler(SCHED_TYPE.GREEDY_FIT);		
-		double costUpBound = ContainerCost.totalCost(boundScheduler.schedule(req, start), req);
+		double costUpBound = Double.POSITIVE_INFINITY;
+		if (predict == null){
+			Scheduler boundScheduler = new GreedyScheduler(SCHED_TYPE.GREEDY_FIT);
+			costUpBound = ContainerCost.totalCost(boundScheduler.schedule(req, start), req);
+		}
+		else{
+			Scheduler boundScheduler = new DpScheduler(SCHED_TYPE.OPT_DP);
+			costUpBound = ContainerCost.totalCost(boundScheduler.schedule(req, predict, start), req);
+		}		
 		
 		DpRunner dpRunner = new DpRunner(req, start, costUpBound);
 		return dpRunner.schedule();
@@ -30,7 +39,7 @@ public class DpScheduler extends Scheduler{
 			subReq.add(req.get(t));
 			subReq.add(predict.get(t) + (int) Math.ceil(Constant.ALPHA / (double) Constant.BETA));
 			
-			DeployTrace subTrace = optSchedule(subReq, pre);
+			DeployTrace subTrace = optSchedule(subReq, null, pre);
 			pre = subTrace.getDeploymentArr()[0];
 			trace.add(pre);
 		}
@@ -42,15 +51,21 @@ public class DpScheduler extends Scheduler{
 	public DeployTrace schedule(RequestTrace req, ContainerList start) {
 		assert (type == SCHED_TYPE.OPT_DP):
 			"Only OPT DpScheduler provides scheduling without predicted values.";
-		return optSchedule(req, start);						
+		return optSchedule(req, null, start);						
 	}
 	
 
 	@Override
 	public DeployTrace schedule(RequestTrace req, RequestTrace predict, ContainerList start) {
-		assert (type == SCHED_TYPE.PREDICTION_DP): 
-			"Only PREDICT DpScheduler provides scheduling with predicted values.";		
-		return predictSchedule(req, predict, start);
+		switch(type){
+			case OPT_DP:
+				return optSchedule(req, predict, start);
+			case PREDICTION_DP:
+				return predictSchedule(req, predict, start);
+			default:
+				assert false: "Unknown type: " + type;					
+		}		
+		return null;
 	}
 
 }

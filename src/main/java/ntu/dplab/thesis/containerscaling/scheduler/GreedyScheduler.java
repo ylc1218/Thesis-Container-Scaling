@@ -18,7 +18,7 @@ public class GreedyScheduler extends Scheduler{
 		ContainerList bestList = null;
 		for(ContainerList now : possible){
 			double cost = ContainerCost.stepCost(pre, now, curNeed);
-			if (cost <= minCost){
+			if (cost < minCost){
 				minCost = cost;
 				bestList = now;
 			}

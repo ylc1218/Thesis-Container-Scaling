@@ -168,7 +168,7 @@ public class DpRunner {
 		}
 	}
 	
-	public DeployTrace schedule(){		
+	public DeployTrace schedule(){
 		System.out.println("# combinationLists = " + L);
 		int arrId = 0;
 		
