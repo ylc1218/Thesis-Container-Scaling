@@ -8,14 +8,9 @@ import ntu.dplab.thesis.containerscaling.container.ContainerUtil;
 import ntu.dplab.thesis.containerscaling.trace.DeployTrace;
 import ntu.dplab.thesis.containerscaling.trace.RequestTrace;
 
-public class GreedyScheduler implements Scheduler{
-	private final SCHED_TYPE type;	
-	public static enum SCHED_TYPE{
-		MAX, FIT;
-	}
-	
+public class GreedyScheduler extends Scheduler{	
 	public GreedyScheduler(SCHED_TYPE type) {
-		this.type = type;
+		super(type);
 	}
 	
 	private ContainerList scheduleStep(ContainerList pre, List<ContainerList> possible, int curNeed){
@@ -40,7 +35,7 @@ public class GreedyScheduler implements Scheduler{
 			boolean reSchedule = true;
 			
 			// don't re-schedule if (type = FIT) and (constraints are met)
-			if (type == SCHED_TYPE.FIT && ContainerUtil.fitConstraints(pre, curNeed)){
+			if (type == SCHED_TYPE.GREEDY_FIT && ContainerUtil.fitConstraints(pre, curNeed)){
 				reSchedule = false;
 			}
 

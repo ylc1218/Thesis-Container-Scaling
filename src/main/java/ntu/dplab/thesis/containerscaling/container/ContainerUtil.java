@@ -56,11 +56,12 @@ public class ContainerUtil {
 	*/
 	private class DpCombinationHelper{
 		private ContainerList boundList;
-		private int minReq;
+		private int minReq, maxBoundReq;
 		private ArrayList<ContainerList> retList;
 		
 		private DpCombinationHelper(int minReq, int maxReq, ContainerList start){
-			this.minReq = minReq;			
+			this.minReq = minReq;
+			maxBoundReq = containerUpBound(maxReq);
 		
 			boundList = new ContainerList();
 			for(int n = 0; n < Constant.N; n++){
@@ -73,7 +74,7 @@ public class ContainerUtil {
 		
 		private void dfs(ContainerList l, int id, int have){
 			if (id == Constant.N){				
-				if (have >= minReq){
+				if (have >= minReq && have <= maxBoundReq){
 					retList.add(l.clone());
 				}
 				return;
