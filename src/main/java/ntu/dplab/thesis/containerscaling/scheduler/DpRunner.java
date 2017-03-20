@@ -133,7 +133,6 @@ public class DpRunner {
 				final int nI = i;
 				
 				executorService.submit(new Runnable() {
-					@Override
 					public void run() {
 						Cell bestCell = findPrevBestCell(needArr[t], now, preId);
 						if (bestCell == null) return;

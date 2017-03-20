@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TRACE=$1
-TRACE_DIR="src/main/resources"
+TRACE_DIR="src/main/resources/trace"
 JAR="target/compute-penalty-0.0.1-SNAPSHOT.jar"
 CLASS="ntu.dplab.thesis.containerscaling.Main"
 
